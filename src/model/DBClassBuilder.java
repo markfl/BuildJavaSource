@@ -78,6 +78,16 @@ public class DBClassBuilder {
 			ffc.closeConnection();
 			ffc = new FileFieldCheck(company.trim());
 		}
+		/*setNumberOfFields(0);
+		setNumberOfKeyFields(0);
+		setShortLibraryName(new String());
+		setLongLibraryName(new String());
+		setDataBase(new String());
+		setFileName(new String());
+		setLongFileName(new String());
+		setTableType(new String());
+		setHasKeysInd(false);
+		setHasMultipleKeysInd(false);*/
 		
 	}
 
@@ -88,6 +98,16 @@ public class DBClassBuilder {
 		setCompanyName(company);
 		if (ffc != null) ffc.closeConnection();
 		ffc = new FileFieldCheck(company);
+		/*setNumberOfFields(0);
+		setNumberOfKeyFields(0);
+		setShortLibraryName(new String());
+		setLongLibraryName(new String());
+		setDataBase(new String());
+		setFileName(new String());
+		setLongFileName(new String());
+		setTableType(new String());
+		setHasKeysInd(false);
+		setHasMultipleKeysInd(false);*/
 		
 	}
 	
@@ -99,6 +119,16 @@ public class DBClassBuilder {
 		setConnMSSQL(connMSSQL);
 		if (ffc != null) ffc.closeConnection();
 		ffc = new FileFieldCheck(company);
+		/*setNumberOfFields(0);
+		setNumberOfKeyFields(0);
+		setShortLibraryName(new String());
+		setLongLibraryName(new String());
+		setDataBase(new String());
+		setFileName(new String());
+		setLongFileName(new String());
+		setTableType(new String());
+		setHasKeysInd(false);
+		setHasMultipleKeysInd(false);*/
 		
 	}
 	
@@ -111,6 +141,16 @@ public class DBClassBuilder {
 		setDataBase(DB);
 		if (ffc != null) ffc.closeConnection();
 		ffc = new FileFieldCheck(company);
+		/*setNumberOfFields(0);
+		setNumberOfKeyFields(0);
+		setShortLibraryName(new String());
+		setLongLibraryName(new String());
+		setDataBase(new String());
+		setFileName(new String());
+		setLongFileName(new String());
+		setTableType(new String());
+		setHasKeysInd(false);
+		setHasMultipleKeysInd(false);*/
 		
 	}
 	
@@ -126,6 +166,16 @@ public class DBClassBuilder {
 		setLongLibraryName(library);
 		if (ffc != null) ffc.closeConnection();
 		ffc = new FileFieldCheck(getLongLibraryName());
+		/*setNumberOfFields(0);
+		setNumberOfKeyFields(0);
+		setShortLibraryName(new String());
+		setLongLibraryName(new String());
+		setDataBase(new String());
+		setFileName(new String());
+		setLongFileName(new String());
+		setTableType(new String());
+		setHasKeysInd(false);
+		setHasMultipleKeysInd(false);*/
 		
 	}
 	
@@ -636,7 +686,9 @@ public class DBClassBuilder {
 		// set all Use key indicators off
 		line += "\n" +saveLine + "\n";
 
-		line += "\t\tgetFields();\n\n";
+		line += "\t\tif (!getFields()) {\n";
+		line += "\t\t\tSystem.out.println(\"Fields could not be retrieved.\");\n";
+		line += "\t\t}\n\n";
 		
         line += "\t\tsetsupressErrorMsg(false);";
         WriteJavaSourceLine(line);
@@ -753,7 +805,10 @@ public class DBClassBuilder {
 				line += "\n" + saveLine + "\n";
 			}
 
-	        line += "\t\tgetFields();\n";
+			line += "\t\tif (!getFields()) {\n";
+			line += "\t\t\tSystem.out.println(\"Fields could not be retrieved.\");\n";
+			line += "\t\t}\n";
+
 	        WriteJavaSourceLine(line);
 	        
 			SetOffAllInd(2);
@@ -2348,15 +2403,19 @@ public class DBClassBuilder {
 		line += "\t\t" + "}\n";
 		line += "\t}\n\n";
 		
-		line += "\tpublic void getFields() {\n\n";
-	    line += "\t\treadJSON();\n\n";
-	    line += "\t\tsetAllFields(getAllFields());\n";
-		line += "\t\tsetAllKeyFiles(getAllKeyFiles());\n";
-		line += "\t\tsetAllKeyFields(getAllKeyFields());\n";
-		line += "\t\tsetAllPhysicalKeyFieldNames(getAllPhysicalKeyFieldNames());\n";
-		line += "\t\tsetAllLogicalKeyFieldNames(getAllLogicalKeyFieldNames());\n";
-		line += "\t\tsetAllLogicalKeyFields(getAllLogicalKeyFields());\n";
-		line += "\t\tsetAllLogicalKeyFieldList(getAllLogicalKeyFieldList());\n";
+		line += "\tpublic Boolean getFields() {\n\n";
+	    line += "\t\tif (readJSON()) {\n";
+	    line += "\t\t\tsetAllFields(getAllFields());\n";
+		line += "\t\t\tsetAllKeyFiles(getAllKeyFiles());\n";
+		line += "\t\t\tsetAllKeyFields(getAllKeyFields());\n";
+		line += "\t\t\tsetAllPhysicalKeyFieldNames(getAllPhysicalKeyFieldNames());\n";
+		line += "\t\t\tsetAllLogicalKeyFieldNames(getAllLogicalKeyFieldNames());\n";
+		line += "\t\t\tsetAllLogicalKeyFields(getAllLogicalKeyFields());\n";
+		line += "\t\t\tsetAllLogicalKeyFieldList(getAllLogicalKeyFieldList());\n";
+		line += "\t\t\treturn true;\n";
+		line += "\t\t} else {\n";
+		line += "\t\t\treturn false;\n";
+		line += "\t\t}\n";
 	    line += "\t}\n\n";
 	    
 	    line += "\tpublic Collection<ArrayList<String>> getAllFields() {\n";
@@ -3276,7 +3335,7 @@ public class DBClassBuilder {
 				allLogicalKeyFieldNames.add((String) jsonArray.get(i));
 			}
 		} catch (IOException | ParseException e) {
-			if (!getLongFileName().isEmpty()) {
+			if ((getLongFileName() != null) && !getLongFileName().isEmpty()) {
 				System.out.println("Class not created for file " + getLongFileName());
 				return false;
 			} else {
@@ -3318,11 +3377,12 @@ public class DBClassBuilder {
 	}
 	
 	@SuppressWarnings("unused")
-	public int getRecordCount(String company, String data, String file) {
+	public int getRecordCount(String company, String data, String file, String fileInputStream) {
 		
 		int counterTotal = 0;
 		try (BufferedReader in = new BufferedReader(new
-			InputStreamReader(new FileInputStream("C:\\Users Shared Folders\\markfl\\Documents\\My Development\\My SQL Source\\" + company + "\\data\\" + data + "\\" + file + ".csv"), "UTF-8"))) {
+		//  InputStreamReader(new FileInputStream("C:\\Users Shared Folders\\markfl\\Documents\\My Development\\My SQL Source\\" + company + "\\data\\" + data + "\\" + file + ".csv"), "UTF-8"))) {
+			InputStreamReader(new FileInputStream(fileInputStream), "UTF-8"))) {
 			String line = new String();
 			while ((line  = in.readLine()) != null ) {
 				counterTotal += 1;

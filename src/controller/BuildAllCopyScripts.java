@@ -82,7 +82,9 @@ public class BuildAllCopyScripts {
 							PreparedStatement insertStmt = connMSSQLLibList.prepareStatement(insertSql);
 							insertStmt.setString(1, library);
 							insertStmt.setString(2, fileName);
-							double counterTotal = cb.getRecordCount(company, library, fileName);
+							String fileInputStream = new String();
+							fileInputStream = "C:\\Users Shared Folders\\markfl\\Documents\\My Development\\My SQL Source\\" + company + "\\data\\" + dataSource + "\\" + fileName + ".csv";
+							double counterTotal = cb.getRecordCount(company, library, fileName, fileInputStream);
 							insertStmt.setInt(3, (int) counterTotal);
 							//insertStmt.executeUpdate();
 							insertStmt.close();

@@ -230,7 +230,9 @@ public class DBCopyBuilder {
 		        line += "\t\t\te1.printStackTrace();\n";
 		        line += "\t\t}\n\n";
 		        
-		        line += "\t\tdouble counterTotal = getRecordCount(getCompanyName(), \"" + getDataSource() + "\", getFileName());\n";
+		        line += "\t\tString fileInputStream = new String();\n";
+		        line += "\t\tfileInputStream = \"C:\\\\Users Shared Folders\\\\markfl\\\\Documents\\\\My Development\\\\My SQL Source\\\\" + getCompanyName() + "\\\\data\\\\" + getLibraryName() + "\\\\" + getFileName() + ".csv\";\n";
+		        line += "\t\tdouble counterTotal = getRecordCount(getCompanyName(), \"" + getDataSource() + "\", getFileName(), fileInputStream);\n";
 				line += "\t\tSystem.out.println((int) counterTotal + \" record(s) to copy to " + getFileName() +  ".\");\n\n";
 				
 		        line += "\t\tsetsupressErrorMsg(true);\n";
@@ -238,10 +240,10 @@ public class DBCopyBuilder {
 		        line += "\t\tint errorCounter = 0;\n";
 		        line += "\t\ttry (BufferedReader in = new BufferedReader(new\n";
 		        if (getDataSource().isEmpty()) {
-			        line += "\t\t\tInputStreamReader(new FileInputStream(\"C:\\\\Users Shared Folders\\\\markfl\\\\Documents\\\\My Development\\\\My SQL Source\\\\" + getCompanyName() + "\\\\data\\\\" + getLibraryName() + "\\\\" + getFileName() + ".csv\"), \"UTF-8\"))) {\n";
+			        line += "\t\t\tInputStreamReader(new FileInputStream(fileInputStream), \"UTF-8\"))) {\n";
 
 		        } else {
-			        line += "\t\t\tInputStreamReader(new FileInputStream(\"C:\\\\Users Shared Folders\\\\markfl\\\\Documents\\\\My Development\\\\My SQL Source\\\\" + getCompanyName() + "\\\\data\\\\" + getDataSource() + "\\\\" + getFileName() + ".csv\"), \"UTF-8\"))) {\n";
+			        line += "\t\t\tInputStreamReader(new FileInputStream(fileInputStream), \"UTF-8\"))) {\n";
 		        }
 		        line += "\t\t\tString line;\n";
 		        line += "\t\t\tString splitBy = \"\\\\t\";\n";
