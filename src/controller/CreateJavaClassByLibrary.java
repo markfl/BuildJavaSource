@@ -36,17 +36,23 @@ public class CreateJavaClassByLibrary {
 		}
 		
 		String companySql = new String();
+		String countSQL = new String();
 		String fileName = new String();
 		String longFileName = new String();
 		String fileNameSave = new String();
+		int libCount = 0;
+		int currentCount = 0;
 		ArrayList<String> allReturnStrings = new ArrayList<String>();
-		if (includeLibrary.isEmpty())
+		if (includeLibrary.isEmpty()) {
 			companySql = "Select * from " + libraryList
 					   + " Where runoption = 'y'"
 					   + " Order by sequence, library";
-		else
+			countSQL = "Select count(*) as numberOfRecords from " + libraryList
+					   + " Where runoption = 'y'";
+		} else {
 			companySql = "Select * from " + libraryList
 					   + " Where library = '" + includeLibrary + "'";
+		}
 
 		Collection<ArrayList<String>> fields = new ArrayList<ArrayList<String>>();
 		int classesCreated = 0;
@@ -66,6 +72,13 @@ public class CreateJavaClassByLibrary {
 					+ "FROM INFORMATION_SCHEMA.COLUMNS "
 					+ "ORDER BY INFORMATION_SCHEMA.COLUMNS.TABLE_NAME, "
 					+ "INFORMATION_SCHEMA.COLUMNS.ORDINAL_POSITION";
+			PreparedStatement checkStmt3 = connLibrary.prepareStatement(countSQL);;
+			ResultSet resultsSelect3 = checkStmt3.executeQuery();
+			resultsSelect3.next();
+			libCount = resultsSelect3.getInt(1);
+			if (libCount > 0) {
+				System.out.println(libCount + " libraries to build." );
+			}
 			checkStmt1 = connLibrary.prepareStatement(companySql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			ResultSet resultsSelect1 = checkStmt1.executeQuery();
 			while (resultsSelect1.next()) {
@@ -126,6 +139,8 @@ public class CreateJavaClassByLibrary {
 					e.printStackTrace();
 				}
 				String returnString = "Build Java program completed normally for library " + includeLibrary + ", " + classesCreated + " classes created.";
+				currentCount += 1;
+				System.out.println(currentCount + " libraries created. " + (libCount - currentCount) + " to go." );
 				allReturnStrings.add(returnString);
 				System.out.println(returnString);
 			}

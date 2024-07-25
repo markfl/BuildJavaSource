@@ -84,7 +84,7 @@ public class BuildCopyScripts {
 		}
 		
 		try (FileOutputStream out = new FileOutputStream(new File(
-				"C:\\Users Shared Folders\\markfl\\Documents\\My Development\\My SQL Source\\" + getCompany() + "\\count" + getLibrary() + "_" + getDatabase() + ".sql"))) {
+				"C:\\Users Shared Folders\\markfl\\Documents\\My Development\\My SQL Source\\" + getCompany() + "\\sql\\count" + getLibrary() + "_" + getDatabase() + ".sql"))) {
 			out.write(sql.toString().getBytes());
 			sql.setLength(0);
 		} catch (FileNotFoundException e) {
@@ -123,7 +123,11 @@ public class BuildCopyScripts {
 			runJava.append("\t\treturnString = runcopy_" + getLibrary() + "_" + copyFiles + ".run" + copyFiles + "();\n");
 			runJava.append("\t\tSystem.out.println(returnString);\n");
 			runJava.append("\t\tallReturnStrings.add(returnString);\n");
-			runJava.append("\t\tSystem.out.println(" + count + " + \" of \" + " + allCopyFile.size() + " + \" completed.\" + " + (allCopyFile.size() - count) + " + \" to go.\");\n\n");			
+			if (count < allCopyFile.size()) {
+				runJava.append("\t\tSystem.out.println(" + count + " + \" of \" + " + allCopyFile.size() + " + \" completed.\" + " + (allCopyFile.size() - count) + " + \" to go.\");\n\n");
+			} else {
+				runJava.append("\t\tSystem.out.println(" + count + " + \" of \" + " + allCopyFile.size() + " + \" completed.\");\n\n");			
+			}
     	}
 		runJava.append("\t\tfor(String returnAllString : allReturnStrings) {\n");
 		runJava.append("\t\t\tSystem.out.println(returnAllString);\n");
@@ -199,7 +203,15 @@ public class BuildCopyScripts {
 			runJava.append("\t\treturnString = runcopy_" + library + "_" + fileName + ".run" + fileName + "();\n");
 			runJava.append("\t\tSystem.out.println(returnString);\n");
 			runJava.append("\t\tallReturnStrings.add(returnString);\n");
-			runJava.append("\t\tSystem.out.println(" + count + " + \" of \" + " + allCopyFile.size() + " + \" completed. \" + " + (allCopyFile.size() - count) + " + \" to go.\");\n\n");			
+			if (count == 39) {
+				System.out.println(count);
+			}
+			if (count < allCopyFile.size()) {
+				runJava.append("\t\tSystem.out.println(" + count + " + \" of \" + " + allCopyFile.size() + " + \" completed. \" + " + (allCopyFile.size() - count) + " + \" to go.\");\n\n");			
+			} else {
+				runJava.append("\t\tSystem.out.println(" + count + " + \" of \" + " + allCopyFile.size() + " + \" completed.\");\n\n");			
+			}
+			
     	}
 		runJava.append("\t\tfor(String returnAllString : allReturnStrings) {\n");
 		runJava.append("\t\t\tSystem.out.println(returnAllString);\n");
