@@ -77,8 +77,8 @@ public class BuildAllCopyScriptsByLibrary {
 				dbcb.BuildCopyClass();
 				if (dbcb.getClassBuilt()) {
 					countTotal++;
-					String className = "copy_" + longFileName; 
-					System.out.println("Class " + className + " created.");
+					String className = "copy_" + longFileName.trim(); 
+					System.out.println("Class " + className.trim() + " created.");
 					allCopyFile.add(library);
 					allCopyFile.add(fileName);
 					allCopyFiles.add(allCopyFile);

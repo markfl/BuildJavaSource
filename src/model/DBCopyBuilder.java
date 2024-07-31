@@ -136,7 +136,7 @@ public class DBCopyBuilder {
 		
 		dbcb.setCompanyName(getCompanyName());
 		dbcb.setDataBase(getDataBase());
-		dbcb.setFileName(getFileName());
+		dbcb.setFileName(getFileName().trim());
 		dbcb.setLongLibraryName(getLongLibraryName());
 		dbcb.setLongFileName(getLongFileName());
 		if (dbcb.readJSON()) {
@@ -157,7 +157,7 @@ public class DBCopyBuilder {
 				line += "import java.sql.SQLException;\n\n";
 		
 				if (getLongFileName().isEmpty())
-					line += "import com.database." + getDataBase() + "." + getFileName() + ";\n\n";
+					line += "import com.database." + getDataBase() + "." + getFileName().trim() + ";\n\n";
 				else
 					line += "import com.database." + getDataBase() + "." + getLongFileName() + ";\n\n";
 		        // write class heading
@@ -170,17 +170,18 @@ public class DBCopyBuilder {
 		        }
 		        line += "import model.CheckTime;\n\n";
 		        if (getLongFileName().isEmpty())
-		        	line += "public class copy_" + getLibraryName() + "_" + getFileName() + " extends " + getFileName() + " {\n\n";
+		        	line += "public class copy_" + getLibraryName().trim() + "_" + getFileName().trim().trim() + " extends " + getFileName().trim().trim() + " {\n\n";
 		        else
-		        	line += "public class copy_" + getLongLibraryName() + "_" + getFileName() + " extends " + getLongFileName() + " {\n\n";
+		        	line += "public class copy_" + getLongLibraryName().trim() + "_" + getFileName().trim().trim() + " extends " + getLongFileName().trim()
+		        	+ " {\n\n";
 	
-		        line += "\tpublic String run" + getFileName() + "() {\n\n";
+		        line += "\tpublic String run" + getFileName().trim() + "() {\n\n";
 		        line += "\t\tString company = \"" + getCompanyName() + "\";\n";
 		        line += "\t\tString returnString = new String();\n";
 		        line += "\t\tCheckTime ct = new CheckTime();\n";
 		        if (!getLongFileName().isEmpty()) {
-		        	line += "\t\tsetLongLibraryName(\"" + getLongLibraryName() + "\");\n";
-		        	line += "\t\tsetLongFileName(\"" + getLongFileName() + "\");\n";
+		        	line += "\t\tsetLongLibraryName(\"" + getLongLibraryName().trim() + "\");\n";
+		        	line += "\t\tsetLongFileName(\"" + getLongFileName().trim() + "\");\n";
 		        }
 	
 		        if (getLongFileName().isEmpty()) {
@@ -197,10 +198,10 @@ public class DBCopyBuilder {
 		        } else {
 		        	if (dBase.equals("mssql")) {
 			        	line += "\t\tConnection connMSSQL = null;\n";
-						line += "\t\tMsSQL dbMSSQL = new MsSQL(\"" + getLongLibraryName() +  "\");\n";
+						line += "\t\tMsSQL dbMSSQL = new MsSQL(\"" + getLongLibraryName().trim() +  "\");\n";
 			        } else if (dBase.equals("mysql")) {
 			        	line += "\t\tConnection connMYSQL = null;\n";
-						line += "\t\tMySQL dbMYSQL = new MySQL(\"" + getLongLibraryName() +  "\");\n";
+						line += "\t\tMySQL dbMYSQL = new MySQL(\"" + getLongLibraryName().trim() +  "\");\n";
 			        } else if (dBase.equals("oracle")) {
 			        	line += "\t\tConnection connORACLE = null;\n";
 						line += "\t\tOracle dbORACLE = new Oracle(\"" + getLongLibraryName() +  "\");\n";
@@ -209,7 +210,7 @@ public class DBCopyBuilder {
 		        
 				line += "\t\tsetCompanyName(company);\n";
 				line += "\t\tsetDataBase(\"" + getDataBase() + "\");\n";
-				line += "\t\tsetFileName(\"" + getFileName() + "\");\n";
+				line += "\t\tsetFileName(\"" + getFileName().trim() + "\");\n";
 				line += "\t\treadJSON();\n";
 				line += "\t\ttry {\n";
 				if (dBase.equals("mssql")) {
@@ -231,9 +232,9 @@ public class DBCopyBuilder {
 		        line += "\t\t}\n\n";
 		        
 		        line += "\t\tString fileInputStream = new String();\n";
-		        line += "\t\tfileInputStream = \"C:\\\\Users Shared Folders\\\\markfl\\\\Documents\\\\My Development\\\\My SQL Source\\\\" + getCompanyName() + "\\\\data\\\\" + getLibraryName() + "\\\\" + getFileName() + ".csv\";\n";
-		        line += "\t\tdouble counterTotal = getRecordCount(getCompanyName(), \"" + getDataSource() + "\", getFileName(), fileInputStream);\n";
-				line += "\t\tSystem.out.println((int) counterTotal + \" record(s) to copy to " + getFileName() +  ".\");\n\n";
+		        line += "\t\tfileInputStream = \"C:\\\\Users Shared Folders\\\\markfl\\\\Documents\\\\My Development\\\\My SQL Source\\\\" + getCompanyName() + "\\\\data\\\\" + getLibraryName() + "\\\\" + getFileName().trim() + ".csv\";\n";
+		        line += "\t\tdouble counterTotal = getRecordCount(getCompanyName(), \"" + getDataSource() + "\", getFileName().trim(), fileInputStream);\n";
+				line += "\t\tSystem.out.println((int) counterTotal + \" record(s) to copy to " + getFileName().trim() +  ".\");\n\n";
 				
 		        line += "\t\tsetsupressErrorMsg(true);\n";
 		        line += "\t\tdouble counter = 0.0;\n";
@@ -256,9 +257,9 @@ public class DBCopyBuilder {
 		        }
 		        line += "\t\t\tsetUpdateOK(true);\n";
 		        line += "\t\t\treadFirst();\n";
-		        line += "\t\t\tSystem.out.println(\"Clearing " + getFileName() + "\");\n";
+		        line += "\t\t\tSystem.out.println(\"Clearing " + getFileName().trim() + "\");\n";
 		        line += "\t\t\tdelete();\n";
-		        line += "\t\t\tSystem.out.println(\"Copying data to " + getFileName() + "\");\n";
+		        line += "\t\t\tSystem.out.println(\"Copying data to " + getFileName().trim() + "\");\n";
 				line += "\t\t\twhile ((line  = in.readLine()) != null ) {\n";
 		        line += "\t\t\t\tString records[] = line.split(splitBy);\n";
 				int counter1 = 0;
@@ -312,14 +313,14 @@ public class DBCopyBuilder {
 		        line += "\t\t\t\t\t\tdouble counterDiff = counter / counterTotal;\n";
 		        line += "\t\t\t\t\t\tint counterPercent = (int) (counterDiff * 100);\n";
 		        line += "\t\t\t\t\t\tint printCounterTotal = (int) counterTotal;";
-		        line += "\t\t\t\t\t\tSystem.out.println((int) counter + \" records of \" + printCounterTotal + \" written to " + getFileName() + ". \" + counterPercent + \"% complete.\");\n";
+		        line += "\t\t\t\t\t\tSystem.out.println((int) counter + \" records of \" + printCounterTotal + \" written to " + getFileName().trim() + ". \" + counterPercent + \"% complete.\");\n";
 		        line += "\t\t\t\t\t}\n";
 		        line += "\t\t\t\t} catch (SQLException e) {\n";
 		        line += "\t\t\t\t\te.printStackTrace();\n";
 		        line += "\t\t\t\t\terrorCounter++;\n";
 		    	line += "\t\t\t\t}\n";
 		    	line += "\t\t\t}\n";
-		    	line += "\t\t\treturnString = ct.calculateElapse(\"Copy\", \"" + getFileName() + "\", (int) counter);\n";
+		    	line += "\t\t\treturnString = ct.calculateElapse(\"Copy\", \"" + getFileName().trim() + "\", (int) counter);\n";
 		    	line += "\t\t\tdbMSSQL.closeConnection(connMSSQL);\n";
 		        line += "\t\t} catch (UnsupportedEncodingException e) {\n";
 		        line += "\t\t\te.printStackTrace();\n";
@@ -355,9 +356,9 @@ public class DBCopyBuilder {
 	private void WriteClass() {
 		String outputString = new String();
 		if (getLongFileName().isEmpty())
-			outputString = "C:\\Users Shared Folders\\markfl\\Documents\\My Development\\Eclipse\\Java EE\\" + getCompanyName() + "\\src\\com\\copy\\" + getDataBase() + "\\copy_" + getLibraryName() + "_" + getFileName() + ".java";
+			outputString = "C:\\Users Shared Folders\\markfl\\Documents\\My Development\\Eclipse\\Java EE\\" + getCompanyName() + "\\src\\com\\copy\\" + getDataBase().trim() + "\\copy_" + getLibraryName().trim() + "_" + getFileName().trim().trim() + ".java";
 		else
-			outputString = "C:\\Users Shared Folders\\markfl\\Documents\\My Development\\Eclipse\\Java EE\\" + getCompanyName() + "\\src\\com\\copy\\" + getDataBase() + "\\copy_" + getLongLibraryName() + "_" + getFileName() + ".java";
+			outputString = "C:\\Users Shared Folders\\markfl\\Documents\\My Development\\Eclipse\\Java EE\\" + getCompanyName() + "\\src\\com\\copy\\" + getDataBase().trim() + "\\copy_" + getLongLibraryName().trim() + "_" + getFileName().trim().trim() + ".java";
 	    try (FileOutputStream out = new FileOutputStream(new File(outputString))) {
 			out.write(text.toString().getBytes());
 			text.setLength(0);

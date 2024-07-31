@@ -3236,9 +3236,9 @@ public class DBClassBuilder {
 
 		String outString = new String();
 		if ((getLongFileName() != null) && (!getLongFileName().isEmpty()))
-			outString = "C:\\Users Shared Folders\\markfl\\Documents\\My Development\\Eclipse\\Java EE\\" + getCompanyName() + "\\json\\" + getDataBase() + "\\" + getLongFileName() + ".json";
+			outString = "C:\\Users Shared Folders\\markfl\\Documents\\My Development\\Eclipse\\Java EE\\" + getCompanyName() + "\\json\\" + getDataBase() + "\\" + getLongFileName().trim() + ".json";
 		else
-			outString = "C:\\Users Shared Folders\\markfl\\Documents\\My Development\\Eclipse\\Java EE\\" + getCompanyName() + "\\json\\" + getDataBase() + "\\" + getFileName() + ".json"; 
+			outString = "C:\\Users Shared Folders\\markfl\\Documents\\My Development\\Eclipse\\Java EE\\" + getCompanyName() + "\\json\\" + getDataBase() + "\\" + getFileName().trim() + ".json"; 
 		try {
 			JSONParser parser = new JSONParser();
 			Reader reader = new FileReader(outString);

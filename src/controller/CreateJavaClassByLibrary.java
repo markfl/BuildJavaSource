@@ -76,7 +76,7 @@ public class CreateJavaClassByLibrary {
 			ResultSet resultsSelect3 = checkStmt3.executeQuery();
 			resultsSelect3.next();
 			libCount = resultsSelect3.getInt(1);
-			if (libCount > 0) {
+			if (libCount > 1) {
 				System.out.println(libCount + " libraries to build." );
 			}
 			checkStmt1 = connLibrary.prepareStatement(companySql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
