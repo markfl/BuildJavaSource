@@ -172,9 +172,7 @@ public class DBCopyBuilder {
 		        if (getLongFileName().isEmpty())
 		        	line += "public class copy_" + getLibraryName().trim() + "_" + getFileName().trim().trim() + " extends " + getFileName().trim().trim() + " {\n\n";
 		        else
-		        	line += "public class copy_" + getLongLibraryName().trim() + "_" + getFileName().trim().trim() + " extends " + getLongFileName().trim()
-		        	+ " {\n\n";
-	
+		        	line += "public class copy_" + getLongLibraryName().trim() + "_" + getFileName().trim().trim() + " extends " + getLongFileName().trim() + " {\n\n";
 		        line += "\tpublic String run" + getFileName().trim() + "() {\n\n";
 		        line += "\t\tString company = \"" + getCompanyName() + "\";\n";
 		        line += "\t\tString returnString = new String();\n";
@@ -232,7 +230,7 @@ public class DBCopyBuilder {
 		        line += "\t\t}\n\n";
 		        
 		        line += "\t\tString fileInputStream = new String();\n";
-		        line += "\t\tfileInputStream = \"C:\\\\Users Shared Folders\\\\markfl\\\\Documents\\\\My Development\\\\My SQL Source\\\\" + getCompanyName() + "\\\\data\\\\" + getLibraryName() + "\\\\" + getFileName().trim() + ".csv\";\n";
+		        line += "\t\tfileInputStream = \"C:\\\\Users Shared Folders\\\\markfl\\\\Documents\\\\My Development\\\\My SQL Source\\\\" + getCompanyName().trim() + "\\\\data\\\\" + getLibraryName().trim() + "\\\\" + getFileName().trim() + ".csv\";\n";
 		        line += "\t\tdouble counterTotal = getRecordCount(getCompanyName(), \"" + getDataSource() + "\", getFileName().trim(), fileInputStream);\n";
 				line += "\t\tSystem.out.println((int) counterTotal + \" record(s) to copy to " + getFileName().trim() +  ".\");\n\n";
 				
@@ -321,6 +319,7 @@ public class DBCopyBuilder {
 		    	line += "\t\t\t\t}\n";
 		    	line += "\t\t\t}\n";
 		    	line += "\t\t\treturnString = ct.calculateElapse(\"Copy\", \"" + getFileName().trim() + "\", (int) counter);\n";
+		    	line += "\t\t\treturnString = returnString.trim() + \" \" + (int) counter + \" records copied.\";\n";
 		    	line += "\t\t\tdbMSSQL.closeConnection(connMSSQL);\n";
 		        line += "\t\t} catch (UnsupportedEncodingException e) {\n";
 		        line += "\t\t\te.printStackTrace();\n";
