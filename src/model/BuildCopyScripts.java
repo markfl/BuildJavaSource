@@ -136,7 +136,6 @@ public class BuildCopyScripts {
 		runJava.append("\t\tSystem.out.println(returnString);\n");
 		runJava.append("\t}\n");
 		runJava.append("}");
-		String fileOutputStream = "C:\\Users Shared Folders\\markfl\\Documents\\My Development\\eclipse\\Java EE\\" + getCompany().trim() + "\\src\\runAllCopy" + getDatabase() + "_" + getLibrary().trim() + ".java";
 		try (FileOutputStream out = new FileOutputStream(new File(
 			"C:\\Users Shared Folders\\markfl\\Documents\\My Development\\eclipse\\Java EE\\" + getCompany().trim() + "\\src\\runAllCopy" + getDatabase() + "_" + getLibrary().trim() + ".java"))) {
 			out.write(runJava.toString().getBytes());
