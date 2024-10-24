@@ -78,16 +78,6 @@ public class DBClassBuilder {
 			ffc.closeConnection();
 			ffc = new FileFieldCheck(company.trim());
 		}
-		/*setNumberOfFields(0);
-		setNumberOfKeyFields(0);
-		setShortLibraryName(new String());
-		setLongLibraryName(new String());
-		setDataBase(new String());
-		setFileName(new String());
-		setLongFileName(new String());
-		setTableType(new String());
-		setHasKeysInd(false);
-		setHasMultipleKeysInd(false);*/
 		
 	}
 
@@ -98,16 +88,6 @@ public class DBClassBuilder {
 		setCompanyName(company);
 		if (ffc != null) ffc.closeConnection();
 		ffc = new FileFieldCheck(company);
-		/*setNumberOfFields(0);
-		setNumberOfKeyFields(0);
-		setShortLibraryName(new String());
-		setLongLibraryName(new String());
-		setDataBase(new String());
-		setFileName(new String());
-		setLongFileName(new String());
-		setTableType(new String());
-		setHasKeysInd(false);
-		setHasMultipleKeysInd(false);*/
 		
 	}
 	
@@ -119,16 +99,6 @@ public class DBClassBuilder {
 		setConnMSSQL(connMSSQL);
 		if (ffc != null) ffc.closeConnection();
 		ffc = new FileFieldCheck(company);
-		/*setNumberOfFields(0);
-		setNumberOfKeyFields(0);
-		setShortLibraryName(new String());
-		setLongLibraryName(new String());
-		setDataBase(new String());
-		setFileName(new String());
-		setLongFileName(new String());
-		setTableType(new String());
-		setHasKeysInd(false);
-		setHasMultipleKeysInd(false);*/
 		
 	}
 	
@@ -141,16 +111,6 @@ public class DBClassBuilder {
 		setDataBase(DB);
 		if (ffc != null) ffc.closeConnection();
 		ffc = new FileFieldCheck(company);
-		/*setNumberOfFields(0);
-		setNumberOfKeyFields(0);
-		setShortLibraryName(new String());
-		setLongLibraryName(new String());
-		setDataBase(new String());
-		setFileName(new String());
-		setLongFileName(new String());
-		setTableType(new String());
-		setHasKeysInd(false);
-		setHasMultipleKeysInd(false);*/
 		
 	}
 	
@@ -162,20 +122,23 @@ public class DBClassBuilder {
 		setConnMSSQL(connMSSQL);
 		setDataBase(DB);
 		setShortLibraryName(library);
-		//setLongLibraryName(company + "_" + library);
 		setLongLibraryName(library);
 		if (ffc != null) ffc.closeConnection();
 		ffc = new FileFieldCheck(getLongLibraryName());
-		/*setNumberOfFields(0);
-		setNumberOfKeyFields(0);
-		setShortLibraryName(new String());
-		setLongLibraryName(new String());
-		setDataBase(new String());
-		setFileName(new String());
-		setLongFileName(new String());
-		setTableType(new String());
-		setHasKeysInd(false);
-		setHasMultipleKeysInd(false);*/
+		
+	}
+	
+	public DBClassBuilder(String company, Connection connMSSQL, String DB, String longLibrary, String shortLibrary) {
+		
+		super();
+		
+		setCompanyName(company);
+		setConnMSSQL(connMSSQL);
+		setDataBase(DB);
+		setShortLibraryName(shortLibrary);
+		setLongLibraryName(longLibrary);
+		if (ffc != null) ffc.closeConnection();
+		ffc = new FileFieldCheck(getLongLibraryName());
 		
 	}
 	
@@ -505,11 +468,11 @@ public class DBClassBuilder {
 		String fieldName = new String();
 		String fieldType = new String();
 		String saveLine = new String();
+		String description = new String();
 		for (ArrayList<String> element : allFields) {
 			int counter = 0;
 			for (String field : element) {
 				counter++;
-				if (counter > 3) break;
 				switch (counter) {
 					case 2:
 						fieldName = field;
@@ -517,15 +480,18 @@ public class DBClassBuilder {
 					case 3:
 						fieldType = field;
 						break;
+					case 9:
+						description = field;
+						break;
 				}
 			}
 			if (fieldType.equals(intString)) {
-				line += "\tprivate " + fieldType + "\t\t" + fieldName + ";\n";
-				saveLine += "\tprivate " + fieldType + "\t\t" + fieldName + "Sav;\n";
+				line += "\tprivate " + fieldType + "\t\t" + fieldName + "; // " + description + "\n";
+				saveLine += "\tprivate " + fieldType + "\t\t" + fieldName + "Sav; // " + description + "\n";
 				
 			} else {
-				line += "\tprivate " + fieldType + "\t" + fieldName + ";\n";
-				saveLine += "\tprivate " + fieldType + "\t" + fieldName + "Sav;\n";
+				line += "\tprivate " + fieldType + "\t" + fieldName + "; // " + description + "\n";
+				saveLine += "\tprivate " + fieldType + "\t" + fieldName + "Sav; // " + description + "\n";
 			}
 		}
 		line += "\n" + saveLine + "\n";
@@ -2797,10 +2763,9 @@ public class DBClassBuilder {
 		String numericType = "numeric";
 		String intType = "int";
 		String bigintType = "bigint";
-
-		String fieldName;
+		
 		try {
-			fieldName = resultsSelect.getString(2).toLowerCase();
+			String fieldName = resultsSelect.getString(2).toLowerCase();
 			fieldName = ffc.checkFieldName(fieldName);
 	    	int fieldOrder = resultsSelect.getInt(3);
 	    	String fieldTypeTest = resultsSelect.getString(4);
@@ -2831,6 +2796,7 @@ public class DBClassBuilder {
 				getFileIndexString();
 				firstRecord = false;
 			}
+			String fieldText = new String();	
 			keyFields = getAllPhysicalKeyFieldNames();
 			Collection<String> fieldList = new ArrayList<String>();
 			fieldList.add(FileName);
@@ -2859,6 +2825,7 @@ public class DBClassBuilder {
 			fieldList.add(keyField);
 			fieldList.add("set" + fieldName);
 			fieldList.add("get" + fieldName);
+			fieldList.add(fieldText);
 			field.add((ArrayList<String>) fieldList);
 			nbrOfFields = fieldOrder;
 			setNumberOfFields(nbrOfFields);
@@ -2881,7 +2848,8 @@ public class DBClassBuilder {
 			e.printStackTrace();
 		}
 
-		return field;	}
+		return field;
+	}
     
     public Map<String, Object> getCurrentField(String fldName) {
     	return newFields.get(fldName);
@@ -3054,6 +3022,7 @@ public class DBClassBuilder {
 			Boolean fieldIsKey = false;
 			String getter = new String();
 			String setter = new String();
+			String description = new String();
 			int count = 0;
 			for (String field : elements) {
 				count++;
@@ -3084,6 +3053,10 @@ public class DBClassBuilder {
 					case 8:
 						getter = field;
 						break;
+					case 9:
+						description = field;
+						break;
+						
 				}
 			}
 			
@@ -3096,6 +3069,7 @@ public class DBClassBuilder {
 			item.put("FieldIsKey", fieldIsKey);
 			item.put("FieldGetter", getter);
 			item.put("FieldSetter", setter);
+			item.put("FieldText", description);
 			array.add(item);
 		}
 
@@ -3258,6 +3232,7 @@ public class DBClassBuilder {
 				String fieldGetter = (String) obj.get("FieldGetter");
 				Boolean fieldIsKey = (Boolean) obj.get("FieldIsKey");
 				String fieldSetter = (String) obj.get("FieldSetter");
+				String description = (String) obj.get("FieldText");
 				Collection<String> fieldList = new ArrayList<String>();
 				fieldList.add(fileName);
 				fieldList.add(fieldName);
@@ -3267,6 +3242,7 @@ public class DBClassBuilder {
 				fieldList.add(Boolean.toString(fieldIsKey));
 				fieldList.add(fieldGetter);
 				fieldList.add(fieldSetter);
+				fieldList.add(description);
 				allFields.add((ArrayList<String>) fieldList);
 			}
 

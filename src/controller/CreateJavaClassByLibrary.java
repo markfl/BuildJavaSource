@@ -26,7 +26,6 @@ public class CreateJavaClassByLibrary {
 			includeLibrary = args[2];
 		}
 		Connection connLibrary = null;
-		connLibrary = null;
 		String libraryList = company + "liblistreseq";
 		MsSQL dbLibList = new MsSQL("liblist");
 		try {
@@ -72,10 +71,12 @@ public class CreateJavaClassByLibrary {
 					+ "FROM INFORMATION_SCHEMA.COLUMNS "
 					+ "ORDER BY INFORMATION_SCHEMA.COLUMNS.TABLE_NAME, "
 					+ "INFORMATION_SCHEMA.COLUMNS.ORDINAL_POSITION";
-			PreparedStatement checkStmt3 = connLibrary.prepareStatement(countSQL);;
-			ResultSet resultsSelect3 = checkStmt3.executeQuery();
-			resultsSelect3.next();
-			libCount = resultsSelect3.getInt(1);
+			if (includeLibrary.isEmpty()) {
+				PreparedStatement checkStmt3 = connLibrary.prepareStatement(countSQL);
+				ResultSet resultsSelect3 = checkStmt3.executeQuery();
+				resultsSelect3.next();
+				libCount = resultsSelect3.getInt(1);
+			} else libCount = 1;
 			if (libCount > 1) {
 				System.out.println(libCount + " libraries to build." );
 			}
@@ -90,7 +91,7 @@ public class CreateJavaClassByLibrary {
 					Connection connMSSQL = dbMSSQL.connect();
 					fileNameSave = new String();
 					System.out.println("Build starting for library " + includeLibrary);
-					dbcb = new DBClassBuilder(company, connMSSQL, DB, includeLibrary);
+					dbcb = new DBClassBuilder(company, connMSSQL, DB, includeLibrary, libraryName);
 					PreparedStatement checkStmt2 = connMSSQL.prepareStatement(selectSql);
 				    ResultSet resultsSelect2 = checkStmt2.executeQuery();
 				    Boolean createAClass = false;

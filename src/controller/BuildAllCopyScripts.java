@@ -30,7 +30,10 @@ public class BuildAllCopyScripts {
 		
 		String company = args[0];
 		String database = args[1];
-		String dataSource = args[2];
+		String dataSource = new String();
+		if (args.length >= 3) {
+			dataSource = args[2];
+		}
 		ArrayList<String> allCopyFile = new ArrayList<String>();
 		Connection connMSSQL = null;
 		Connection connMSSQLLibList = null;
@@ -54,6 +57,9 @@ public class BuildAllCopyScripts {
 			String library;
 			while ((library  = dirin.readLine()) != null ) {
 				bcs.setLibrary(library);
+				if (args.length < 3) {
+					dataSource = library;
+				}
 				try (BufferedReader in = new BufferedReader(new 
 						InputStreamReader(new FileInputStream("C:\\Users Shared Folders\\markfl\\Documents\\My Development\\My SQL Source\\" + company + "\\data\\" + library + "\\filestoread.txt"), "UTF-8"))) {
 					String line;
