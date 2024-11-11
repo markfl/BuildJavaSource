@@ -2841,8 +2841,8 @@ public class DBClassBuilder {
 				if (keyDir != null) currentfield.put("Direction", keyDir);
 				else currentfield.put("Direction", null);
 			} else currentfield.put("Direction", null);
-			currentfield.put("Getter", "get" + fieldName);
 			currentfield.put("Setter", "set" + fieldName);
+			currentfield.put("Getter", "get" + fieldName);
 			newFields.put(fieldName, currentfield);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -3067,9 +3067,11 @@ public class DBClassBuilder {
 			item.put("FieldSize", fieldSize);
 			item.put("FieldDecimal", fieldDec);
 			item.put("FieldIsKey", fieldIsKey);
-			item.put("FieldGetter", getter);
 			item.put("FieldSetter", setter);
+			item.put("FieldGetter", getter);
 			item.put("FieldText", description);
+			item.put("LongLibraryName", getLongLibraryName().trim());
+			item.put("ShortLibraryName",getShortLibraryName().trim());
 			array.add(item);
 		}
 
@@ -3106,9 +3108,7 @@ public class DBClassBuilder {
 						fieldDec = Integer.parseInt(field);
 						break;
 					case 6:
-						if (Integer.parseInt(field) == 1) {
-							fieldIsKey = true;
-						} else fieldIsKey = false;
+						fieldIsKey = Boolean.valueOf(field);
 						break;
 					case 7:
 						setter = field;
@@ -3126,8 +3126,8 @@ public class DBClassBuilder {
 			item.put("FieldSize", fieldSize);
 			item.put("FieldDecimal", fieldDec);
 			item.put("FieldIsKey", fieldIsKey);
-			item.put("FieldGetter", getter);
 			item.put("FieldSetter", setter);
+			item.put("FieldGetter", getter);
 			array.add(item);
 		}
 
@@ -3233,6 +3233,8 @@ public class DBClassBuilder {
 				Boolean fieldIsKey = (Boolean) obj.get("FieldIsKey");
 				String fieldSetter = (String) obj.get("FieldSetter");
 				String description = (String) obj.get("FieldText");
+				String longLibraryName = (String) obj.get("LongLibraryName");
+				String shortLibraryName = (String) obj.get("ShortLibraryName");
 				Collection<String> fieldList = new ArrayList<String>();
 				fieldList.add(fileName);
 				fieldList.add(fieldName);
@@ -3240,9 +3242,11 @@ public class DBClassBuilder {
 				fieldList.add(Long.toString(fieldSize));
 				fieldList.add(Long.toString(fieldDecimal));
 				fieldList.add(Boolean.toString(fieldIsKey));
-				fieldList.add(fieldGetter);
 				fieldList.add(fieldSetter);
+				fieldList.add(fieldGetter);
 				fieldList.add(description);
+				fieldList.add(longLibraryName);
+				fieldList.add(shortLibraryName);
 				allFields.add((ArrayList<String>) fieldList);
 			}
 
@@ -3267,8 +3271,8 @@ public class DBClassBuilder {
 				fieldList.add(Long.toString(fieldSize));
 				fieldList.add(Long.toString(fieldDecimal));
 				fieldList.add(Boolean.toString(fieldIsKey));
-				fieldList.add(fieldGetter);
 				fieldList.add(fieldSetter);
+				fieldList.add(fieldGetter);
 				allKeyFields.add((ArrayList<String>) fieldList);
 			}
 			

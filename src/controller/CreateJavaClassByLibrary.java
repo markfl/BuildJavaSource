@@ -108,7 +108,7 @@ public class CreateJavaClassByLibrary {
 							createAClass = false;
 				    		firstRecord = true;
 				    		fields = new ArrayList<ArrayList<String>>();
-				    		dbcb = new DBClassBuilder(company, connMSSQL, DB, includeLibrary);
+				    		dbcb = new DBClassBuilder(company, connMSSQL, DB, includeLibrary, libraryName);
 				    	}
 				    	dbcb.setFileName(fileName);
 				    	dbcb.setLongFileName(longFileName);

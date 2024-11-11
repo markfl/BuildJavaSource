@@ -32,23 +32,22 @@ public class DBClassBuilderFromDBDictionary {
 		
 		Collection<ArrayList<String>> fields = new ArrayList<ArrayList<String>>();
 		
-		library = args[0];
-		company = args[1];
-		db = args[2];
+		company = args[0];
+		db = args[1];
 		includeLibrary = new String();
-		if (args.length >= 4) {
-			includeLibrary = args[3];
+		if (args.length >= 3) {
+			includeLibrary = args[2];
 		}
 		
 		connMSSQL = null;
-		MsSQL dbMSSQL = new MsSQL(library);
+		MsSQL dbMSSQL = new MsSQL(company);
 		try {
 			connMSSQL = dbMSSQL.connect();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		ffc = new FileFieldCheck(company);
-		ffc.setConn(library);
+		ffc.setConn(company);
 		ffc.setDataBase(db);
 		String selectSql = new String();
 		if (includeLibrary.isEmpty())
@@ -71,11 +70,12 @@ public class DBClassBuilderFromDBDictionary {
 		    if (resultsSelect.first()) {
 		    	physicalFileName = resultsSelect.getString(1).trim().toLowerCase();
 		    	fileName = ffc.checkFieldName(physicalFileName);
-		    	libraryName = resultsSelect.getString(2).trim().toLowerCase();		    	fields = getFieldData(physicalFileName, libraryName, fields);
+		    	libraryName = resultsSelect.getString(2).trim().toLowerCase();
+		    	fields = getFieldData(physicalFileName, libraryName, fields);
 		    	buildJavaClass(fileName, libraryName, fields);
 		    	fields = new ArrayList<ArrayList<String>>();
 		    	classesCreated++;
-		    	System.out.println("Class " + fileName.trim() + " from library " + libraryName.trim() + " created.");
+		    	System.out.println("Class " + fileName.trim() + " from library " + company.trim() + " created.");
 			    while (resultsSelect.next()) {
 			    	physicalFileName = resultsSelect.getString(1).toLowerCase();
 			    	fileName = ffc.checkFieldName(physicalFileName);
@@ -84,7 +84,7 @@ public class DBClassBuilderFromDBDictionary {
 			    	buildJavaClass(fileName, libraryName, fields);
 			    	fields = new ArrayList<ArrayList<String>>();
 			    	classesCreated++;
-			    	System.out.println("Class " + fileName.trim() + " from library " + libraryName.trim() + " created.");
+			    	System.out.println("Class " + fileName.trim() + " from library " + company.trim() + " created.");
 			    }
 			}
 		} catch (SQLException e) {
@@ -258,6 +258,7 @@ public class DBClassBuilderFromDBDictionary {
 		String fileLibrary = new String();
 		String fieldName = new String();
 		String fieldType = new String();
+		String description = new String();
 		int fieldSize = 0;
 		int decimal = 0;
 		int count = 0;
@@ -281,6 +282,9 @@ public class DBClassBuilderFromDBDictionary {
 					break;
 				case 6:
 					decimal = Integer.parseInt(field);
+					break;
+				case 7:
+					description = field.trim();
 					break;
 			}
 		}
@@ -369,6 +373,7 @@ public class DBClassBuilderFromDBDictionary {
 		}
 		fieldList.add("set" + fieldName);
 		fieldList.add("get" + fieldName);
+		fieldList.add(description);
 		fields.add((ArrayList<String>) fieldList);
     	return fields;
     }

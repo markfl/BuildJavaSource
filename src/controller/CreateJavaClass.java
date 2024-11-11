@@ -59,7 +59,7 @@ public class CreateJavaClass {
 
 		try {
 			connMSSQL = dbMSSQL.connect();
-			dbcb = new DBClassBuilder(company, connMSSQL, DB);
+			dbcb = new DBClassBuilder(company, connMSSQL, DB, company);
 			PreparedStatement checkStmtSelect = null;
 			if (args.length >= 3) {
 				checkStmtSelect = connMSSQL.prepareStatement(selectSql2);
@@ -82,7 +82,7 @@ public class CreateJavaClass {
 		    		dbcb.setAllFields(fields);
 		    		firstRecord = true;
 		    		//dbcb.closeConnection();
-		    		dbcb = new DBClassBuilder(company, connMSSQL, DB);
+		    		dbcb = new DBClassBuilder(company, connMSSQL, DB, company);
 		    	}
 		    	dbcb.setFileName(fileName);
 		    	fields = dbcb.getFileFields(firstRecord, resultsSelect, fields);

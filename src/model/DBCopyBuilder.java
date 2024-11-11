@@ -38,8 +38,8 @@ public class DBCopyBuilder {
 		this.dataBase = dataBase;
 		this.libraryName = libraryName;
 		this.fileName = fileName;
-		this.longLibraryName = new String();
-		this.longFileName = new String();
+		this.longLibraryName = libraryName;
+		this.longFileName = fileName;
 		this.dataSource = dataSource;
 		this.classBuilt = false;
 	}
@@ -50,8 +50,8 @@ public class DBCopyBuilder {
 		this.dataBase = dataBase;
 		this.libraryName = libraryName;
 		this.fileName = fileName;
-		this.longLibraryName = new String();
-		this.longFileName = new String();
+		this.longLibraryName = libraryName;
+		this.longFileName = fileName;
 		this.dataSource = new String();
 		this.classBuilt = false;
 	}
@@ -272,7 +272,7 @@ public class DBCopyBuilder {
 							case 3:
 								fldType = field;
 								break;
-							case 8:
+							case 7:
 								setter = field;
 								break;
 						}

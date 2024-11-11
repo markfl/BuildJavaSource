@@ -26,20 +26,32 @@ public class GetFileFieldData {
 		
 	}
 		
+	public GetFileFieldData(String companyName, String libraryName, String fileName, String db, Connection connMSSQL) {
+
+		super();
+		
+		setCompanyName(companyName);
+		setLibraryName(libraryName);
+		setFileName(fileName);
+		setDb(db);
+		setConnMSSQL(connMSSQL);
+		
+	}
+
 	public GetFileFieldData(String companyName, String libraryName, String fileName, String db, CheckName cn, Connection connMSSQL) {
 
 		super();
 		
-		setConnMSSQL(connMSSQL);
 		setCompanyName(companyName);
 		setLibraryName(libraryName);
 		setFileName(fileName);
 		setDb(db);
 		setCn(cn);
+		setConnMSSQL(connMSSQL);
 		
 	}
 
-	static public Collection<ArrayList<String>> getFieldData(Collection<ArrayList<String>> fields) {
+	public Collection<ArrayList<String>> getFieldData(Collection<ArrayList<String>> fields) {
 		
 		Collection<String> currentFields = new ArrayList<String>();
 		String selectSql = "Select whfile, whlib, whflde, whfldb, whfldd, whfldt, whfldp, whftxt, whjref, concat, whfldi, whmap, whmaps, whmapl "
@@ -54,40 +66,41 @@ public class GetFileFieldData {
 		    ResultSet resultsSelect = checkStmt.executeQuery();
 		    boolean firstRecord = true;
 		    while (resultsSelect.next()) {
-		    	String currentFileName = resultsSelect.getString(1);
-		    	String currentLibraryName = resultsSelect.getString(2);
-		    	String fieldName = resultsSelect.getString(3);
+		    	String currentFileName = resultsSelect.getString(1).trim().toLowerCase();
+		    	String currentLibraryName = resultsSelect.getString(2).trim().toLowerCase();
+		    	String fieldName = resultsSelect.getString(3).trim().toLowerCase();
 				firstRecord = false;
 				if (!fieldName.trim().equals("QZG0000031")) {
-			    	libraryName = resultsSelect.getString(2);
-			    	fieldName = resultsSelect.getString(3);
-			    	fieldName = cn.checkFieldName(fieldName.trim().toLowerCase());
+			    	setLibraryName(currentLibraryName);
+			    	fieldName = cn.checkFieldName(fieldName);
 			    	int fieldSizeAlpha = resultsSelect.getInt(4);
 			    	int fieldSizeNumeric = resultsSelect.getInt(5);
 					String fieldType = resultsSelect.getString(6);
 					int decimal = resultsSelect.getInt(7);
 					String fieldText = resultsSelect.getString(8);
-					int joinReference = resultsSelect.getInt(9);
-					String concat = resultsSelect.getString(10);
+					//int joinReference = resultsSelect.getInt(9);
+					//String concat = resultsSelect.getString(10);
 					String interalFieldName = resultsSelect.getString(11);
 					interalFieldName = cn.checkFieldName(interalFieldName.trim().toLowerCase());
-					String map = resultsSelect.getString(12);
-					int substringStart = resultsSelect.getInt(13);
-					int substringLength = resultsSelect.getInt(14);
-					currentFields.add(currentFileName);
-					currentFields.add(currentLibraryName);
+					//String map = resultsSelect.getString(12);
+					//int substringStart = resultsSelect.getInt(13);
+					//int substringLength = resultsSelect.getInt(14);
+					currentFields.add(currentFileName.toLowerCase().trim());
 					currentFields.add(fieldName);
+					currentFields.add(fieldType);
 					currentFields.add(Integer.toString(fieldSizeAlpha));
 					currentFields.add(Integer.toString(fieldSizeNumeric));
-					currentFields.add(fieldType);
 					currentFields.add(Integer.toString(decimal));
-					currentFields.add(fieldText);
-					currentFields.add(Integer.toString(joinReference));
+					currentFields.add("set" + fieldName);
+					currentFields.add("get" + fieldName);
+					currentFields.add(fieldText.trim());
+					/*currentFields.add(Integer.toString(joinReference));
 					currentFields.add(concat.trim());
 					currentFields.add(interalFieldName);
 					currentFields.add(map.trim());
 					currentFields.add(Integer.toString(substringStart));
-					currentFields.add(Integer.toString(substringLength));
+					currentFields.add(Integer.toString(substringLength));*/
+					//currentFields.add(currentLibraryName.toLowerCase().trim());
 					fields = getFileFields(firstRecord, currentFields, fields);
 					currentFields = new ArrayList<String>();
 				}
@@ -166,18 +179,15 @@ public class GetFileFieldData {
     	
     	Collection<String> fieldList = new ArrayList<String>();
     	
+    	String fileName = new String();
 		String fieldName = new String();
 		String fieldType = new String();
 		int fieldSizeAlpha = 0;
 		int fieldSizeNumeric = 0;
 		int decimal = 0;
+		String setter = new String();
+		String getter = new String();
 		String fieldText = new String();
-		int joinReference = 0;
-		String fieldConcat = new String();
-		String interalFieldName = new String();
-		String map = new String();
-		int substringStart = 0;
-		int substringLength = 0;
 		int count = 0;
 		for (String field : results) {
 			count++;
@@ -185,8 +195,11 @@ public class GetFileFieldData {
 				case 1:
 					fileName = field.trim();
 					break;
-				case 3:
+				case 2:
 					fieldName = field.trim();
+					break;
+				case 3:
+					fieldType = field.trim();
 					break;
 				case 4:
 					fieldSizeAlpha = Integer.parseInt(field);
@@ -195,35 +208,16 @@ public class GetFileFieldData {
 					fieldSizeNumeric = Integer.parseInt(field);
 					break;
 				case 6:
-					fieldType = field.trim();
-					break;
-				case 7:
 					decimal = Integer.parseInt(field);
 					break;
+				case 7:
+					setter = field.trim();
+					break;
 				case 8:
-					fieldText = field.trim();
+					getter = field.trim();
 					break;
 				case 9:
-					joinReference = Integer.parseInt(field);
-					break;
-				case 10:
-					fieldConcat = field.trim();
-					if (!fieldConcat.isEmpty())
-						setHasConcatField(true);
-					break;
-				case 11:
-					interalFieldName = field.trim();
-					break;
-				case 12:
-					map = field.trim();
-					if (!map.equals("Y"))
-						setHasSubStringField(true);
-					break;
-				case 13:
-					substringStart = Integer.parseInt(field);
-					break;
-				case 14:
-					substringLength = Integer.parseInt(field);
+					fieldText = field.trim();
 					break;
 			}
 		}
@@ -235,126 +229,164 @@ public class GetFileFieldData {
 		if (db.equals("oracle")) {
 			if (fieldSizeNumeric > 4000) {
 				fieldList.add("long varchar");
+				fieldList.add(Integer.toString(fieldSizeNumeric));
 			} else {
 				fieldList.add("varchar2");
+				fieldList.add(Integer.toString(fieldSizeNumeric));
 			}
 		} else if (db.equals("mysql")) {
 			if (fieldSizeAlpha > 255) {
 				fieldList.add("text");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			} else {
 				fieldList.add("char");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			}
 		}
 		if (fieldType.equals("B")) {
 			if (db.equals("oracle")) {
 				fieldList.add("number");
 			}	else if (db.equals("mssql")) {
-					if (decimal == 0) fieldList.add("int");
+					if (decimal == 0) {
+						fieldList.add("int");
+						fieldList.add(Integer.toString(fieldSizeNumeric));
+					}
 					else fieldList.add("double");
+					fieldList.add(Integer.toString(fieldSizeNumeric));
 			} else {
 				fieldList.add("numeric");
+				fieldList.add(Integer.toString(fieldSizeNumeric));
 			}
 		} else if (fieldType.equals("P")) {
 			if (decimal == 0) fieldList.add("int");
 			else fieldList.add("double");
+			fieldList.add(Integer.toString(fieldSizeNumeric));
 		} else if (fieldType.equals("S")) {
 			if (db.equals("mssql")) {
-				if (decimal == 0) fieldList.add("int");
-				else fieldList.add("double");
+				if (decimal == 0) {
+					fieldList.add("int");
+					fieldList.add(Integer.toString(fieldSizeNumeric));
+				} else {
+					fieldList.add("double");
+					fieldList.add(Integer.toString(fieldSizeNumeric));
+				}
 			} else {
 				fieldList.add("numeric");
+				fieldList.add(Integer.toString(fieldSizeNumeric));
 			}
 		} else if (fieldType.equals("A")) {
 			fieldList.add("String");
+			fieldList.add(Integer.toString(fieldSizeAlpha));
 		} else if (fieldType.equals("L")) {
 			if (db.equals("mssql")) {
 				fieldList.add("char");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			} else {
 				fieldList.add("char");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			}
 		} else if (fieldType.equals("Z")) {
 			if (db.equals("mssql")) {
 				fieldList.add("String");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			} else {
 				fieldList.add("char");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			}
 		} else if (fieldType.equals("T")) {
 			if (db.equals("mssql")) {
 				fieldList.add("String");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			} else {
 				fieldList.add("char");
 			}
 		} else if (fieldType.equals("E")) {
 			if (db.equals("mssql")) {
 				fieldList.add("String");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			} else {
 				fieldList.add("char");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			}
 		} else if (fieldType.equals("O")) {
 			if (db.equals("mssql")) {
 				fieldList.add("String");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			} else {
 				fieldList.add("char");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			}
 		} else if (fieldType.equals("H")) {
 			if (db.equals("mssql")) {
 				fieldList.add("String");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			} else {
 				fieldList.add("char");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			}
 		} else if (fieldType.equals("F")) {
 			if (db.equals("mssql")) {
 				fieldList.add("double");
+				fieldList.add(Integer.toString(fieldSizeNumeric));
 			} else {
 				fieldList.add("float");
+				fieldList.add(Integer.toString(fieldSizeNumeric));
 			}
 		} else if (fieldType.equals("G")) {
 			if (db.equals("mssql")) {
 				fieldList.add("String");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			} else {
 				fieldList.add("char");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			}
 		} else if (fieldType.equals("1")) {
 			if (db.equals("mssql")) {
 				fieldList.add("String");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			} else {
 				fieldList.add("char");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			}
 		} else if (fieldType.equals("3")) {
 			if (db.equals("mssql")) {
 				fieldList.add("String");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			} else {
 				fieldList.add("char");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			}
 		} else if (fieldType.equals("5")) {
 			if (db.equals("mssql")) {
 				fieldList.add("String");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			} else {
 				fieldList.add("char");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			}
 		} else if (fieldType.equals("6")) {
 			if (db.equals("mssql")) {
 				fieldList.add("String");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			} else {
 				fieldList.add("char");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			}
 		} else if (fieldType.isEmpty()) {
 			if (db.equals("mssql")) {
 				fieldList.add("String");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			} else {
 				fieldList.add("char");
+				fieldList.add(Integer.toString(fieldSizeAlpha));
 			}
 		}
-		fieldList.add(Integer.toString(fieldSizeAlpha));
-		fieldList.add(Integer.toString(fieldSizeNumeric));
+		
 		fieldList.add(Integer.toString(decimal));
+		fieldList.add("0");
+		fieldList.add(setter);
+		fieldList.add(getter);
 		fieldList.add(fieldText);
-		fieldList.add(Integer.toString(joinReference));
-		fieldList.add(fieldConcat);
-		fieldList.add(interalFieldName);
-		fieldList.add(map);
-		fieldList.add(Integer.toString(substringStart));
-		fieldList.add(Integer.toString(substringLength));
 		fields.add((ArrayList<String>) fieldList);
     	return fields;
     }
