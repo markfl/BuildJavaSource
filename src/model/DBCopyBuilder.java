@@ -230,7 +230,7 @@ public class DBCopyBuilder {
 		        line += "\t\t}\n\n";
 		        
 		        line += "\t\tString fileInputStream = new String();\n";
-		        line += "\t\tfileInputStream = \"C:\\\\Users Shared Folders\\\\markfl\\\\Documents\\\\My Development\\\\My SQL Source\\\\" + getCompanyName().trim() + "\\\\data\\\\" + getLibraryName().trim() + "\\\\" + getFileName().trim() + ".csv\";\n";
+		        line += "\t\tfileInputStream = \"C:\\\\Users Shared Folders\\\\markfl\\\\Documents\\\\My Development\\\\My SQL Source\\\\" + getCompanyName().trim() + "\\\\data\\\\" + getDataSource().trim() + "\\\\" + getFileName().trim() + ".csv\";\n";
 		        line += "\t\tdouble counterTotal = getRecordCount(getCompanyName(), \"" + getDataSource() + "\", getFileName().trim(), fileInputStream);\n";
 				line += "\t\tSystem.out.println((int) counterTotal + \" record(s) to copy to " + getFileName().trim() +  ".\");\n\n";
 				

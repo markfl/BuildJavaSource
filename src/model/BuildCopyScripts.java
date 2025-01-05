@@ -116,15 +116,15 @@ public class BuildCopyScripts {
 		for(String copyFiles : allCopyFile) {
 			count++;
 			if (copyFiles.length() <= 7) {
-				runJava.append("\t\tcopy_" + getLibrary().trim() + "_" + copyFiles.trim() + " runcopy_" + getLibrary().trim() + "_" + copyFiles.trim() + " = new copy_" + getLibrary() + "_" + copyFiles.trim() + "();\n");
+				runJava.append("\t\tcopy_" + getCompany().trim() + "_" + copyFiles.trim() + " runcopy_" + getLibrary().trim() + "_" + copyFiles.trim() + " = new copy_" + getLibrary() + "_" + copyFiles.trim() + "();\n");
 			} else {
-				runJava.append("\t\tcopy_" + getLibrary().trim() + "_" + copyFiles.trim() + " runcopy_" + getLibrary().trim() + "_" + copyFiles.trim() + " = new copy_" + getLibrary() + "_" + copyFiles.trim() + "();\n");
+				runJava.append("\t\tcopy_" + getCompany().trim() + "_" + copyFiles.trim() + " runcopy_" + getLibrary().trim() + "_" + copyFiles.trim() + " = new copy_" + getLibrary() + "_" + copyFiles.trim() + "();\n");
 			}			
 			runJava.append("\t\treturnString = runcopy_" + getLibrary().trim() + "_" + copyFiles.trim() + ".run" + copyFiles.trim() + "();\n");
 			runJava.append("\t\tSystem.out.println(returnString);\n");
 			runJava.append("\t\tallReturnStrings.add(returnString);\n");
 			if (count < allCopyFile.size()) {
-				runJava.append("\t\tSystem.out.println(" + count + " + \" of \" + " + allCopyFile.size() + " + \" completed.\" + " + (allCopyFile.size() - count) + " + \" to go.\");\n\n");
+				runJava.append("\t\tSystem.out.println(" + count + " + \" of \" + " + allCopyFile.size() + " + \" completed. \" + " + (allCopyFile.size() - count) + " + \" to go.\");\n\n");
 			} else {
 				runJava.append("\t\tSystem.out.println(" + count + " + \" of \" + " + allCopyFile.size() + " + \" completed.\");\n\n");			
 			}

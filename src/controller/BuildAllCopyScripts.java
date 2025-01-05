@@ -56,7 +56,7 @@ public class BuildAllCopyScripts {
 				InputStreamReader(new FileInputStream("C:\\Users Shared Folders\\markfl\\Documents\\My Development\\My SQL Source\\" + company + "\\data\\liblist"), "UTF-8"))) {
 			String library;
 			while ((library  = dirin.readLine()) != null ) {
-				bcs.setLibrary(library);
+				bcs.setLibrary(company);
 				if (args.length < 3) {
 					dataSource = library;
 				}
@@ -76,7 +76,7 @@ public class BuildAllCopyScripts {
 						resultsSelect.next();
 						int recordCount = resultsSelect.getInt(1);
 						if (recordCount > 0) {
-					    	DBCopyBuilder dbcb = new DBCopyBuilder(company, database, library, fileName, dataSource);
+					    	DBCopyBuilder dbcb = new DBCopyBuilder(company, database, company, fileName, dataSource);
 							dbcb.BuildCopyClass();
 							// dbcb.WriteClass();
 							count++;
