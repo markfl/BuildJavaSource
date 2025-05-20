@@ -1035,7 +1035,8 @@ public class DBClassBuilder {
             line += "\t\t}\t\n";
 		} else if (type.equals(stringString)) {
 			line += "\t\tthis." + field + " = \"\";\n";
-            line += "\t\tif (!" + field + ".isEmpty()) {\n";
+            //line += "\t\tif (!" + field + ".isEmpty()) {\n";
+			line += "\t\tif (" + field + " != null) {\n";
             line += "\t\t\tint fldlength = " + length + ";\n";
             line += "\t\t\tif (checkSizeString(\"" + field + "\", " + field + ", fldlength)) {\n";
             line += "\t\t\t\tthis." + field + " = " + field + ";\n";
