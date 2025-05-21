@@ -231,7 +231,7 @@ public class DBCopyBuilder {
 		        
 		        line += "\t\tString fileInputStream = new String();\n";
 		        line += "\t\tfileInputStream = \"C:\\\\Users Shared Folders\\\\markfl\\\\Documents\\\\My Development\\\\My SQL Source\\\\" + getCompanyName().trim() + "\\\\data\\\\" + getDataSource().trim() + "\\\\" + getFileName().trim() + ".csv\";\n";
-		        line += "\t\tdouble counterTotal = getRecordCount(getCompanyName(), \"" + getDataSource() + "\", getFileName().trim(), fileInputStream);\n";
+		        line += "\t\tdouble counterTotal = getRecordCount(getCompanyName(), \"" + getDataSource().trim() + "\", getFileName().trim(), fileInputStream);\n";
 				line += "\t\tSystem.out.println((int) counterTotal + \" record(s) to copy to " + getFileName().trim() +  ".\");\n\n";
 				
 		        line += "\t\tsetsupressErrorMsg(true);\n";

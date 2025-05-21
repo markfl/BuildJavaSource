@@ -64,7 +64,6 @@ public class BuildAllCopyScriptsByLibrary {
 				dataSource = resultsSelect.getString(4);
 				fileName = resultsSelect.getString(5);
 				longFileName = resultsSelect.getString(6);
-				System.out.println(library + " " + longLibraryName + " " + dataSource  + " " + fileName  + " " + longFileName);
 				if (!saveDataSource.isEmpty() && !saveDataSource.equals(dataSource)) {
 					if (!allCopyFiles.isEmpty()) {
 						bcs.setAllCopyFiles(allCopyFiles);
